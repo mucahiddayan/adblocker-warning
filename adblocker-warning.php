@@ -165,7 +165,8 @@
 			'development' => get_option( 'abw_development'),
 			'activated'=> get_option( 'abw_activated'),
 			'other_pages' => $other_pages,
-			'column' => '15.4.2016'
+			'column' => 'PASSWORD',
+			'plugin_url' => home_url()
 			);
 
 		foreach ($other_pages as $key => $value) {
