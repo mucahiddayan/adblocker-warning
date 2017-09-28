@@ -97,6 +97,7 @@ var __abw;
 					side : 40,
 					top:0
 				},
+				backgroundColor:'rgba(255,255,255,0)'
 			},
 			toOverlay: {
 				top:'.td-header-menu-wrap-full',
@@ -139,7 +140,7 @@ var __abw;
 			var adminbar = isEmpty($('#wpadminbar'))?0:$('#wpadminbar').height();
 			console.log(adminbar);
 			for(let i=0;i<$settings.overlay.number/2;i++){
-				box += '<div style="position:fixed;top:'+adminbar+'px;left:0;width:100%;height:'+wH+'px;overflow:hidden;z-index:9999999;" class="abw"></div>';
+				box += '<div style="position:fixed;top:'+adminbar+'px;left:0;width:100%;height:'+wH+'px;overflow:hidden;z-index:9999999;background-color:'+$settings.overlay.backgroundColor+'" class="abw"></div>';
 			}
 			box += '<div  id="adblocker-warning-wrapper" style="top:'+adminbar+'px;" class="blocker-boxes">';					
 			box += '<div id="adblocker-warning-box" style="min-height:'+olH+'px;overflow:auto;top:'+olT+'px;width:'+olW+'px;">';
