@@ -8,7 +8,7 @@
  * Author URI: http://dayan.one
  * License: GPL2
  */
-
+	
 	class Adblocker_Warning {
 
 		private $slug = "adblocker-warning";

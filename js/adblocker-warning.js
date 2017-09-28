@@ -1,13 +1,15 @@
 //public variable
 var __abw;
 (function(){
+	console.log('adblocker_warning.js loaded');
 	var isEmpty = function($var) {
 		var result;
 		result = (Array.isArray($var)) ? ($var.length < 1 ? true : false)
 		: ($var == 'undefined' || typeof $var == 'undefined'
 			|| $var == null || $var == '') ? true : false;
 		return result;
-	}
+	}	
+
 	function detectAdBlocker(){
 		
 		var args = arguments;
@@ -50,6 +52,27 @@ var __abw;
 		}, 100);		
 	}
 
+	var getParams = function(){
+		try{
+			var temp = $.ajax(location.origin+'/wp-content/plugins/adblocker-warning/translation_array.php',{
+				method: 'POST',
+				async:false,
+				data: {
+					'func':'adblocker_warning'
+				}
+			}).done(res=>res);
+
+			return JSON.parse(temp.responseText);
+		}catch(e){
+			console.log(e);
+		}
+	}
+
+	if(isEmpty(YWRibG9ja2VyX3dhcm5pbmc)){
+		console.warn('Adblocker Warning Page','=>','Variablen konnten nicht übergeben werden');
+		YWRibG9ja2VyX3dhcm5pbmc = getParams();
+	}
+
 	//private variablen
 	var adblocker_warning = YWRibG9ja2VyX3dhcm5pbmc; //eval(btoa('adblocker_warning').replace('=',''));
 	var __pages = adblocker_warning.pages;
@@ -60,7 +83,6 @@ var __abw;
 	var __errorPages = {
 		pageNotFound : '<h1>Page not Found</h1><a href="home">Zurück</>',
 	}
-
 
 	function adBlockerWarning($options){
 		if(isEmpty($)){if(__dev){console.warn('jQuery is not defined');return false;}}
@@ -91,7 +113,7 @@ var __abw;
 		var resize = function(){
 			$(window).scrollTop(0);
 			var olT = $($settings.toOverlay.top).offset().top + $($settings.toOverlay.top).height(),
-			olW =  /*$($settings.toOverlay.element).width()*/window.innerWidth - $settings.overlay.margin.side,
+			olW =  !isEmpty($($settings.toOverlay.element).width())?$($settings.toOverlay.element).width()- $settings.overlay.margin.side:window.innerWidth - $settings.overlay.margin.side,
 			olH = $($settings.toOverlay.element).height()-$settings.overlay.margin.top,
 			wH = $(window).height();
 
@@ -108,9 +130,9 @@ var __abw;
 
 		var init = function(){
 			if (!__activated) {if(__dev){console.warn('not activated');return;}	}
-			var img = __dev?'/wordpress':'';
+			var img = adblocker_warning.plugin_url;
 			var olT = $($settings.toOverlay.top).offset().top + $($settings.toOverlay.top).height(),
-			olW = window.innerWidth - $settings.overlay.margin.side,
+			olW =  !isEmpty($($settings.toOverlay.element).width())?$($settings.toOverlay.element).width()-$settings.overlay.margin.side :window.innerWidth - $settings.overlay.margin.side,
 			olH = $($settings.toOverlay.element).height()-$settings.overlay.margin.top,
 			wH = $(window).height();
 			var box = '';
@@ -245,10 +267,7 @@ var __abw;
 		}
 		init();
 
-		$(window).resize(function(event) {		
-			resize();		
-			// debounce(function(){resize();},500);		
-		});
+		$(window).resize(debounce(function(){resize();},500));
 		
 		return this;	
 	}
