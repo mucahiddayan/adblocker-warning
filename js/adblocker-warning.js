@@ -52,6 +52,14 @@ var __abw;
 		}, 100);		
 	}
 
+	var cleanFromStr = function(str){
+		if(!isNaN(str)){
+			return str;
+		}else{
+			str.replace(/[^0-9]/ig,'')
+		}
+	}
+
 	var getParams = function(){
 		try{
 			var temp = $.ajax(location.origin+'/wp-content/plugins/adblocker-warning/translation_array.php',{
@@ -66,6 +74,19 @@ var __abw;
 		}catch(e){
 			console.log(e);
 		}
+	}
+
+	var hexToRgb = function (hex){
+		var c;
+		if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+			c= hex.substring(1).split('');
+			if(c.length== 3){
+				c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+			}
+			c= '0x'+c.join('');
+			return [(c>>16)&255, (c>>8)&255, c&255].join(',');
+		}
+		throw new Error('Bad Hex');
 	}
 
 	if(isEmpty(YWRibG9ja2VyX3dhcm5pbmc)){
@@ -83,6 +104,8 @@ var __abw;
 	var __errorPages = {
 		pageNotFound : '<h1>Page not Found</h1><a href="home">Zurück</>',
 	}
+
+	console.log(adblocker_warning);
 
 	function adBlockerWarning($options){
 		if(isEmpty($)){if(__dev){console.warn('jQuery is not defined');return false;}}
@@ -114,7 +137,7 @@ var __abw;
 		var resize = function(){
 			$(window).scrollTop(0);
 			var olT = $($settings.toOverlay.top).offset().top + $($settings.toOverlay.top).height(),
-			olW =  !isEmpty($($settings.toOverlay.element).width())?$($settings.toOverlay.element).width()- $settings.overlay.margin.side:window.innerWidth - $settings.overlay.margin.side,
+			olW =  !isEmpty($($settings.toOverlay.element).width())?$($settings.toOverlay.element).width()- ($settings.overlay.margin.side*2):window.innerWidth - ($settings.overlay.margin.side*2),
 			olH = $($settings.toOverlay.element).height()-$settings.overlay.margin.top,
 			wH = $(window).height();
 
@@ -122,6 +145,7 @@ var __abw;
 				'min-height': olH,
 				'top':olT,
 				'width':olW,
+				'box-shadow' : adblocker_warning.overlay_box_shadow_side +'px '+adblocker_warning.overlay_box_shadow_top+'px '+adblocker_warning.overlay_box_shadow_blur+'px '+adblocker_warning.overlay_box_shadow_spread+'px #000000',			
 			});
 
 			$('#pagable-content').css({
@@ -133,7 +157,7 @@ var __abw;
 			if (!__activated) {if(__dev){console.warn('not activated');return;}	}
 			var img = adblocker_warning.plugin_url;
 			var olT = $($settings.toOverlay.top).offset().top + $($settings.toOverlay.top).height(),
-			olW =  !isEmpty($($settings.toOverlay.element).width())?$($settings.toOverlay.element).width()-$settings.overlay.margin.side :window.innerWidth - $settings.overlay.margin.side,
+			olW =  !isEmpty($($settings.toOverlay.element).width())?$($settings.toOverlay.element).width()-($settings.overlay.margin.side*2) :window.innerWidth - ($settings.overlay.margin.side*2),
 			olH = $($settings.toOverlay.element).height()-$settings.overlay.margin.top,
 			wH = $(window).height();
 			var box = '';
@@ -143,7 +167,7 @@ var __abw;
 				box += '<div style="position:fixed;top:'+adminbar+'px;left:0;width:100%;height:'+wH+'px;overflow:hidden;z-index:9999999;background-color:'+$settings.overlay.backgroundColor+'" class="abw"></div>';
 			}
 			box += '<div  id="adblocker-warning-wrapper" style="top:'+adminbar+'px;" class="blocker-boxes">';					
-			box += '<div id="adblocker-warning-box" style="min-height:'+olH+'px;overflow:auto;top:'+olT+'px;width:'+olW+'px;">';
+			box += '<div id="adblocker-warning-box" style="min-height:'+olH+'px;overflow:auto;top:'+olT+'px;width:'+olW+'px;box-shadow:'+adblocker_warning.overlay_box_shadow_side +'px '+adblocker_warning.overlay_box_shadow_top+'px '+adblocker_warning.overlay_box_shadow_blur+'px '+adblocker_warning.overlay_box_shadow_spread+'px #000000">';
 			box += '<div  id="close-abw" onclick="closeABW();"><i class="td-icon-close"></i></div>';
 			box += '<div id="progress-wrapper" style="position: absolute;width: 100%;height:94%;left: 0;text-align: center;z-index: 999;padding:30px;pointer-events:none;">'
 			box += '<div id="progress" style="display:none;">'
@@ -280,7 +304,14 @@ var __abw;
 				detectAdBlocker(
 					function(){
 						__abw = adBlockerWarning({
-							pages : __pages
+							pages : __pages,
+							overlay:{
+								margin:{
+									side:cleanFromStr(adblocker_warning.margin_side),
+									top:cleanFromStr(adblocker_warning.margin_top)
+								},
+								backgroundColor : 'rgba('+hexToRgb(adblocker_warning.overlay_background_color)+','+adblocker_warning.overlay_opacity+')'
+							}
 						});
 						$('body').addClass('blocked');										
 						if (typeof ga != 'undefined') {

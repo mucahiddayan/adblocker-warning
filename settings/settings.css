@@ -1,0 +1,30 @@
+#abw {    
+    height: 100%;
+    padding:10px;
+    border:1px solid #acacac;
+    margin:auto;
+    overflow: hidden;
+    position: absolute;
+    background-color: #fff;
+}
+
+#preview-wrapper{
+    overflow: hidden;
+    padding: 10px;
+}
+
+#preview {
+    width: 90%;
+    height: 100%;
+    background: #ececec;
+    margin: auto;
+    den;
+}
+
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}

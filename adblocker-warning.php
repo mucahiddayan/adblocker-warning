@@ -9,6 +9,7 @@
  * License: GPL2
  */
 	
+	include_once ('translation_array.php');
 	class Adblocker_Warning {
 
 		private $slug = "adblocker-warning";
@@ -49,6 +50,7 @@
 		public function setup_sections() {
 			add_settings_section( 'adblocker_warning_pages_config', 'Development', array( $this, 'section_callback' ), $this->slug );
 			add_settings_section( 'adblocker_warning_pages', 'Adblocker Warning Pages', array( $this, 'section_callback' ), $this->slug );
+			add_settings_section( 'adblocker_warning_pages_style', 'Adblocker Warning Pages Style', array( $this, 'section_callback' ), $this->slug );
 			#add_settings_section( 'our_second_section', 'My Second Section Title', array( $this, 'section_callback' ), $this->slug );
 			#add_settings_section( 'our_third_section', 'My Third Section Title', array( $this, 'section_callback' ), $this->slug );
 		}
@@ -117,7 +119,116 @@
 					'helper' => '',
 					'supplemental' => '',
 					'default' => ''
-					)
+					),
+				array(
+					'uid' => 'abw_margin_side',
+					'label' => 'Margin Side',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'range',
+					'options' => false,
+					'placeholder' => 'Margin Side',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0',
+					'max'=> 200,
+					'min'=> 0,
+					'step'=>1
+					),
+				array(
+					'uid' => 'abw_margin_top',
+					'label' => 'Margin Top',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'range',
+					'options' => false,
+					'placeholder' => 'Margin Top',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0',
+					'max'=> 100,
+					'min'=> 0,
+					'step'=>1
+					),
+				array(
+					'uid' => 'abw_overlay_background_color',
+					'label' => 'Overlay Background Color',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'color',
+					'options' => false,
+					'placeholder' => 'Overlay Background Color',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0'
+					),
+				array(
+					'uid' => 'abw_overlay_opacity',
+					'label' => 'Overlay Opacity',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'range',
+					'options' => false,
+					'placeholder' => 'Overlay Opacity',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0',
+					'max'=> 1,
+					'min'=> 0,
+					'step'=>'0.01'
+					),
+				array(
+					'uid' => 'abw_overlay_box_shadow_side',
+					'label' => 'Overlay Boxshadow Side',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'range',
+					'options' => false,
+					'placeholder' => 'Overlay Boxshadow Side',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0',
+					'max'=> 100,
+					'min'=> -100,
+					'step'=>1
+					),
+				array(
+					'uid' => 'abw_overlay_box_shadow_top',
+					'label' => 'Overlay Boxshadow Top',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'range',
+					'options' => false,
+					'placeholder' => 'Overlay Boxshadow Top',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0',
+					'max'=> 100,
+					'min'=> -100,
+					'step'=>1
+					),
+				array(
+					'uid' => 'abw_overlay_box_shadow_blur',
+					'label' => 'Overlay Boxshadow Blur',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'range',
+					'options' => false,
+					'placeholder' => 'Overlay Boxshadow Blur',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0',
+					'max'=> 100,
+					'min'=> 0,
+					'step'=>1
+					),
+				array(
+					'uid' => 'abw_overlay_box_shadow_spread',
+					'label' => 'Overlay Boxshadow Spread',
+					'section' => 'adblocker_warning_pages_style',
+					'type' => 'range',
+					'options' => false,
+					'placeholder' => 'Overlay Boxshadow Spread',
+					'helper' => '',
+					'supplemental' => '',
+					'default' => '0',
+					'max'=> 100,
+					'min'=> 0,
+					'step'=>1
+					),
 				);
 			foreach( $fields as $field ){
 				add_settings_field( $field['uid'], $field['label'], array( $this, 'field_callback' ), $this->slug, $field['section'], $field );
@@ -126,16 +237,26 @@
 		}
 
 		public function field_callback( $arguments ) {
-			$value = get_option( $arguments['uid'] ); 
+			$value = get_option( $arguments['uid'] );
+			$class = '';
 			if( ! $value ) { 
 				$value = $arguments['default']; 
 			}
+			if($arguments['section'] == 'adblocker_warning_pages_style'){
+				$class = 'class="style"';
+			}
 			switch( $arguments['type'] ){
 				case 'text': 
-				printf( '<input name="%1$s" id="%1$s" type="%2$s" placeholder="%3$s" value="%4$s" />', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value );
+				printf( '<input '.$class.' name="%1$s" id="%1$s" type="%2$s" placeholder="%3$s" value="%4$s" />', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value );
 				break;
 				case 'checkbox':
-				printf('<input name="%1$s" id="%1$s" type="%2$s" value="1" placeholder="%3$s" %4$s />', $arguments['uid'], $arguments['type'], $arguments['placeholder'], checked(1, $value,false));
+				printf('<input '.$class.' name="%1$s" id="%1$s" type="%2$s" value="1" placeholder="%3$s" %4$s />', $arguments['uid'], $arguments['type'], $arguments['placeholder'], checked(1, $value,false));
+				break;
+				case 'range':
+				printf('<input '.$class.' name="%1$s" id="%1$s" type="%2$s" value="%4$s" placeholder="%3$s" max="%6$s" min="%5$s" step="%7$s"  oninput="this.nextElementSibling.innerText= this.value"/><label>%4$s</label>', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value , $arguments['min'],$arguments['max'],$arguments['step']);
+				break;
+				case 'color':
+				printf('<input '.$class.' name="%1$s" id="%1$s" type="%2$s" value="%4$s" placeholder="%3$s"  oninput="this.nextElementSibling.innerText= this.value"/><label>%4$s</label>', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value);
 				break;
 			}
 			if( $helper = $arguments['helper'] ){
@@ -155,25 +276,6 @@
 	
 
 	function my_enqueued_assets() {
-		$other_pages = explode (';',get_option( 'abw_other_pages'));
-
-		$translation_array = array(
-			'pages' => array(
-				'home' => wpautop(get_post(get_option( 'abw_home' ))->post_content),
-				'anleitung' => wpautop(get_post(get_option( 'abw_anleitung'))->post_content)
-				),
-			'development' => get_option( 'abw_development'),
-			'activated'=> get_option( 'abw_activated'),
-			'other_pages' => $other_pages,
-			'column' => 'PASSWORD',
-			'plugin_url' => home_url()
-			);
-
-		foreach ($other_pages as $key => $value) {
-			$pages = explode(':',$value);			
-			$translation_array['pages'][$pages[0]] = wpautop(get_post($pages[1])->post_content);#array($pages[1]);
-		}
-				
 		wp_enqueue_style( 'abw_style', plugin_dir_url( __FILE__ ) .'css/style.css', '', true );
 		wp_enqueue_script( 'jquery2.2.4', 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js', '', true );
 		wp_register_script( 'adblocker-warning-js', plugin_dir_url( __FILE__ ) . 'js/adblocker-warning.js', array( 'jquery2.2.4' ), '1.0', true );
@@ -183,6 +285,24 @@
 	if (get_option( 'abw_activated')) {
 		add_action( 'wp_enqueue_scripts', 'my_enqueued_assets' );
 	}	
+
+	function abw_settings_js(){
+		wp_enqueue_style( 'abw_style', plugin_dir_url( __FILE__ ) .'settings/settings.css', '', true);
+		wp_register_script('my_custom_script', plugin_dir_url(__FILE__) . 'settings/settings.js');
+		wp_localize_script('my_custom_script', 'abw_settings',array(
+			'margin_side'				=> get_option( 'abw_margin_side'),
+			'margin_top'				=> get_option( 'abw_margin_top'),
+			'overlay_background_color'	=> get_option( 'abw_overlay_background_color','#ffffff'),
+			'overlay_opacity'			=> get_option( 'abw_overlay_opacity','0'),
+			'overlay_box_shadow_top'	=> get_option( 'overlay_box_shadow_top','40'),
+			'overlay_box_shadow_side'	=> get_option( 'overlay_box_shadow_side','0'),
+			'overlay_box_shadow_blur'	=> get_option( 'overlay_box_shadow_blur','60'),
+			'overlay_box_shadow_spread'	=> get_option( 'overlay_box_shadow_spread','0'),
+		));
+		wp_enqueue_script('my_custom_script');
+	}
+
+	add_action('admin_enqueue_scripts', 'abw_settings_js');
 
 	add_action( 'rest_api_init', function () {
 		register_rest_route( 'test/v2', '/post', array(
@@ -194,7 +314,6 @@
 		);    
 	});
 
-	
 	if (!function_exists('test_func')) {
 		function test_func($request){
 			$params = $request->get_params();
