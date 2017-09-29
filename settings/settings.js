@@ -18,6 +18,14 @@ jQuery(document).ready(function(){
 	<div id="abw">Adblocker</div>
 	</div>
 	</div>`;
+
+	var resetButtons = `<div id="button-container">
+	<button id="reset_styles" class="reset_buttons">Reset Style</button>
+	<button id="set_defaults" class="reset_buttons">Set Defaults</button>
+	</div>`;
+
+	jQuery('form').after(resetButtons).css({});
+
 	jQuery(preview).appendTo('body.toplevel_page_adblocker-warning').css({
 		position:'absolute',
 		top: 300,
@@ -32,43 +40,87 @@ jQuery(document).ready(function(){
 	prv = jQuery('#preview'),
 	overlay = jQuery('#overlay');
 
-	function init(){		
-		overlay.css({
-			backgroundColor : 'rgba('+hexToRgb(abw_settings.overlay_background_color)+','+abw_settings.overlay_opacity*5+')',			
-		});
+	var defaults = {
+		margin_side: 20,
+		margin_top : 0,
+		overlay_background_color : '#ffffff',
+		overlay_opacity : 0,
+		overlay_box_shadow_side: 0,
+		overlay_box_shadow_top: 40,
+		overlay_box_shadow_blur: 60,
+		overlay_box_shadow_spread : 0
+	};
+	
+	var current = {	
+		margin_side:jQuery('#abw_margin_side').val(),
+		margin_top : jQuery('#abw_margin_top').val(),
+		overlay_background_color 	: jQuery('#abw_overlay_background_color').val(),
+		overlay_opacity : jQuery('#abw_overlay_opacity').val(),
+		overlay_box_shadow_side:jQuery('#abw_overlay_box_shadow_side').val(),
+		overlay_box_shadow_top: jQuery('#abw_overlay_box_shadow_top').val(),
+		overlay_box_shadow_blur:jQuery('#abw_overlay_box_shadow_blur').val(),
+		overlay_box_shadow_spread : jQuery('#abw_overlay_box_shadow_spread').val(),
+	};
 
-		abw.css({
-			boxShadow : abw_settings.overlay_box_shadow_side +'px '+abw_settings.overlay_box_shadow_top+'px '+abw_settings.overlay_box_shadow_blur+'px '+abw_settings.overlay_box_shadow_spread+'px',			
-			width: prv.width()-abw_settings.margin_side -21,
-			margin: abw_settings.margin_top+'px 0px',
-			marginLeft:+abw_settings.margin_side/2+'px',
-		});
+	jQuery('.reset_buttons').click(function(){
+		switch (jQuery(this).attr('id')) {
+			case 'reset_styles':
+			reset_styles();
+			break;
+			case 'set_defaults':
+			set_defaults();
+			break;
+		}
+	});
+
+	function set_defaults(){
+		setStyle(defaults);
+		set_inputs(defaults);
+	}
+
+	function set_inputs(obj){
+		for(let o in obj){
+			jQuery('#abw_'+o).val(obj[o]).trigger('input');
+		}
+	}
+
+	function reset_styles(){
+		setStyle(current);
+		set_inputs(current);
+	}
+
+	function init(){		
+		setStyle(abw_settings);		
 	}
 
 	jQuery('.style').on('input',function(){
 		// var id = jQuery(this).attr('id');
-		var abw_margin_side = jQuery('#abw_margin_side').val(),
-			abw_margin_top = jQuery('#abw_margin_top').val(),
-			abw_overlay_background_color = jQuery('#abw_overlay_background_color').val(),
-			abw_overlay_opacity = jQuery('#abw_overlay_opacity').val(),
-			abw_overlay_box_shadow_side = jQuery('#abw_overlay_box_shadow_side').val(),
-			abw_overlay_box_shadow_side = jQuery('#abw_overlay_box_shadow_side').val(),
-			abw_overlay_box_shadow_top = jQuery('#abw_overlay_box_shadow_top').val(),
-			abw_overlay_box_shadow_blur = jQuery('#abw_overlay_box_shadow_blur').val(),
-			abw_overlay_box_shadow_spread = jQuery('#abw_overlay_box_shadow_spread').val();
+		var el = {
+			margin_side: jQuery('#abw_margin_side').val(),
+			margin_top : jQuery('#abw_margin_top').val(),
+			overlay_background_color : jQuery('#abw_overlay_background_color').val(),
+			overlay_opacity : jQuery('#abw_overlay_opacity').val(),
+			overlay_box_shadow_side: jQuery('#abw_overlay_box_shadow_side').val(),
+			overlay_box_shadow_top: jQuery('#abw_overlay_box_shadow_top').val(),
+			overlay_box_shadow_blur: jQuery('#abw_overlay_box_shadow_blur').val(),
+			overlay_box_shadow_spread : jQuery('#abw_overlay_box_shadow_spread').val()
+		};
 
-		
+		setStyle(el);		
+	});
+
+	var setStyle = function(style){
 		abw.css({			
-			boxShadow : abw_overlay_box_shadow_side +'px '+abw_overlay_box_shadow_top+'px '+abw_overlay_box_shadow_blur+'px '+abw_overlay_box_shadow_spread+'px',			
-			width: prv.width() - abw_margin_side - 21,
-			margin: abw_margin_top+'px 0px',
-			marginLeft:+abw_margin_side/2+'px',
+			boxShadow : style.overlay_box_shadow_side +'px '+style.overlay_box_shadow_top+'px '+style.overlay_box_shadow_blur+'px '+style.overlay_box_shadow_spread+'px',			
+			width: prv.width() - style.margin_side - 21,
+			margin: style.margin_top+'px 0px',
+			marginLeft:+style.margin_side/2+'px',
 		});
 
 		overlay.css({
-			backgroundColor: 'rgba('+hexToRgb(abw_overlay_background_color)+','+abw_overlay_opacity*5+')',
+			backgroundColor: 'rgba('+hexToRgb(style.overlay_background_color)+','+style.overlay_opacity*5+')',
 		});
-	});
+	}
 
 	init();
 });

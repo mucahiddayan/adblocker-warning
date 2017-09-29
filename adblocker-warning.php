@@ -228,7 +228,7 @@
 					'max'=> 100,
 					'min'=> 0,
 					'step'=>1
-					),
+					),				
 				);
 			foreach( $fields as $field ){
 				add_settings_field( $field['uid'], $field['label'], array( $this, 'field_callback' ), $this->slug, $field['section'], $field );
@@ -258,6 +258,10 @@
 				case 'color':
 				printf('<input '.$class.' name="%1$s" id="%1$s" type="%2$s" value="%4$s" placeholder="%3$s"  oninput="this.nextElementSibling.innerText= this.value"/><label>%4$s</label>', $arguments['uid'], $arguments['type'], $arguments['placeholder'], $value);
 				break;
+				case 'button':
+				printf( '<button name="%1$s" id="%1$s">%2$s</button>', $arguments['uid'], $arguments['label']);
+				break;
+
 			}
 			if( $helper = $arguments['helper'] ){
 				printf( '<span class="helper"> %s</span>', $helper ); 
